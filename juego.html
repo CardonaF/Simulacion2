@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/estilo.css">
+    <title>Ejercicio de memoria</title>
+</head>
+<body>
+    <div class="container">
+        <h3>encuentra y empareja la misma palabra.</h3>
+
+        <div class="cartas" id="cartasAlm"></div>
+    </div>
+
+    <div class="mensaje" id="logrado"></div>
+    <button class="salir" onclick="salir()">Salir</button>
+    
+    <script>
+        let palabras= ['House','Car','Book','Pencil','Table','Chair','Window','Door','fridge','lamp','bed','mirror','keyboard','television','carpet']; 
+        let pares= [...palabras, ...palabras].sort(()=> Math.random() - 0.5);
+  
+        let cartasAlm= document.getElementById("cartasAlm");
+        let carta1= null;
+        let carta2= null;
+        let bloquearT= false;
+        let cont= 0;
+
+        // if(cont>0){
+        //     let logrado= document.getElementById("logrado");
+        //     logrado.textContent= "Felicitaciones! emparejaste todas las palabras";
+        //     logrado.style.backgroundColor= "yellow";
+        // }
+
+        function crearCarta(palabra){
+            let carta= document.createElement('div');
+            carta.classList.add('carta', 'hidden');
+            carta.textContent= palabra;
+
+            carta.addEventListener('click', ()=>{
+                if(bloquearT || carta.classList.contains('emparejado') || carta=== carta1) return;
+                
+                carta.classList.remove('hidden');
+
+                if(!carta1){
+                    carta1= carta;
+                }else{
+                    carta2=carta;
+                    bloquearT= true;
+
+                    if(carta1.textContent === carta2.textContent){
+                        carta1.classList.add('emparejado');
+                        carta2.classList.add('emparejado');
+                        resetearCartas();
+                        cont= cont+1;
+
+                        if(cont===palabras.length){
+                            finalizado();
+                        }
+
+                    }else{
+                        setTimeout(()=> {
+                            carta1.classList.add('hidden');
+                            carta2.classList.add('hidden');
+                            resetearCartas();
+                        }, 800);
+                    }
+                }
+            });
+            return carta;
+        }
+
+        function resetearCartas(){
+            [carta1, carta2]= [null, null]
+            bloquearT= false;
+        }
+        pares.forEach(palabras => {
+            let cartaN= crearCarta(palabras);
+            cartasAlm.appendChild(cartaN);
+        });
+        function finalizado(){
+            let logrado= document.getElementById("logrado");
+            logrado.textContent= "Felicitaciones! emparejaste todas las palabras";
+            logrado.style.backgroundColor= "#ebf375";
+        }
+
+        function salir(){
+            if(cont>14){
+                window.location.href= 'index.html';
+            }else{
+                alert("Finalice la actividad para poder salir");
+            }
+        }
+
+    </script>
+
+</body>
+</html>
+
+<!-- ,'Car','Book','Pencil','Table','Chair','Window','Door','fridge','lamp','bed','mirror','keyboard','television','carpet' -->
